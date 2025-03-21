@@ -4,6 +4,7 @@ import os
 import sys
 
 import requests
+from aiogram import Router
 from aiogram import Bot, Dispatcher, F, types
 from aiogram.filters import CommandStart
 from aiogram.types import Message
@@ -11,6 +12,8 @@ from aiogram.types.bot_command import BotCommand
 from dotenv import load_dotenv
 from keyboards import menu_keyboard
 from logging_tool import async_log_handlers, logging
+
+router = Router()
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", 
@@ -26,11 +29,12 @@ TOKEN = os.getenv("TOKEN_BOT")
 WEATHER_KEY = os.getenv("weather_key")
 
 bot = Bot(token=TOKEN)
-dp: Dispatcher = Dispatcher()
+dp = Dispatcher()
+dp.include_router(router)
 
 
 # command  /start
-@dp.message(CommandStart())
+@router.message(CommandStart())
 @async_log_handlers
 async def start_command(message: Message, *args, **kwargs) -> None:
     await message.answer(f"Hello, {message.from_user.id}:{message.from_user.full_name}! ")
@@ -50,7 +54,7 @@ def wind_direction(degrees: float) -> str:
     return directions[index]
 
 
-@dp.message(F.text)
+@router.message(F.text)
 @async_log_handlers
 async def get_weather(message: types.Message, *args, **kwargs) -> None:
     city = message.text

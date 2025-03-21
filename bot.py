@@ -7,12 +7,14 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types.bot_command import BotCommand
 from dotenv import load_dotenv
+from app.handlers import router
 
 load_dotenv()
 
 TOKEN = getenv("TOKEN_BOT")
 
 dp = Dispatcher()
+dp.include_router(router)
 
 
 async def main() -> None:
